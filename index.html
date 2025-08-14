@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="af">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏰 Afrikaans Avontuur Quest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: heroEntrance 2s ease-out;
+        }
+
+        .game-title {
+            font-size: 3em;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 10px #FFD700); }
+            to { filter: drop-shadow(0 0 20px #FFA500); }
+        }
+
+        .character-panel {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .character-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            animation: avatarBounce 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes avatarBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .character-info {
+            flex: 1;
+        }
+
+        .character-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .character-level {
+            font-size: 1.2em;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .xp-bar {
+            background: #ecf0f1;
+            height: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+        }
+
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: xpShine 2s infinite;
+        }
+
+        @keyframes xpShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .stat-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quest-map {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .map-title {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .quest-path {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .quest-node {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid transparent;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quest-node::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c, #9b59b6, #3498db);
+            border-radius: 22px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .quest-node:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+
+        .quest-node.completed {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            animation: completedPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes completedPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(46, 204, 113, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(46, 204, 113, 0.9); }
+        }
+
+        .quest-node.locked {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .quest-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #e74c3c;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .quest-icon {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 15px;
+            animation: questIconSpin 4s linear infinite;
+        }
+
+        @keyframes questIconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .quest-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .quest-description {
+            font-size: 0.95em;
+            text-align: center;
+            opacity: 0.9;
+            flex: 1;
+        }
+
+        .quest-rewards {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .reward-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            color: white;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            animation: modalSlideIn 0.5s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .modal-title {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .close-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .battle-interface {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .enemy-info {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .enemy-avatar {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: enemyBreathe 2s ease-in-out infinite;
+        }
+
+        @keyframes enemyBreathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .enemy-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .health-bar {
+            background: rgba(0,0,0,0.3);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .question-battle {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #3498db;
+            border-radius: 15px;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .attack-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .attack-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .battle-feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            animation: feedbackAppear 0.5s ease-out;
+        }
+
+        @keyframes feedbackAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .battle-feedback.victory {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .battle-feedback.defeat {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .victory-celebration {
+            text-align: center;
+            padding: 30px;
+            animation: victoryDance 1s ease-in-out infinite;
+        }
+
+        @keyframes victoryDance {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .floating-xp {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #f39c12;
+            animation: floatUp 2s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.2);
+            }
+        }
+
+        .tip-box {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+        }
+
+        .tip-box::before {
+            content: "💡 ";
+            font-size: 1.3em;
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2em;
+            }
+            
+            .character-panel {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .quest-path {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 20px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🏰 Afrikaans Avontuur Quest 🗡️</h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2em;">Verslaan monsters met Afrikaans kennis!</p>
+        </div>
+
+        <div class="character-panel">
+            <div class="character-avatar" id="characterAvatar">🧙‍♂️</div>
+            <div class="character-info">
+                <div class="character-name">Afrikaans Held</div>
+                <div class="character-level" id="characterLevel">Vlak 1 Beginner</div>
+                <div class="xp-bar">
+                    <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                </div>
+                <div style="margin-top: 5px; font-size: 0.9em; color: #7f8c8d;">
+                    <span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-icon">⚔️</div>
+                <div class="stat-value" id="attackPower">1</div>
+                <div class="stat-label">Aanvals Krag</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="victories">0</div>
+                <div class="stat-label">Oorwinnings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label">Wen Reeks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💎</div>
+                <div class="stat-value" id="gems">0</div>
+                <div class="stat-label">Edelstene</div>
+            </div>
+        </div>
+
+        <div class="quest-map">
+            <h2 class="map-title">🗺️ Quest Kaart</h2>
+            <div class="quest-path" id="questPath">
+                <!-- Quest nodes will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Battle Modal -->
+    <div class="modal" id="battleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="battleTitle">Geveg Begin!</h2>
+                <button class="close-btn" onclick="closeBattle()">×</button>
+            </div>
+            
+            <div class="battle-interface" id="battleInterface">
+                <!-- Battle content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quests = [
+            {
+                id: 1,
+                title: "Trappe van Vergelyking",
+                description: "Verslaan die Vergelyking Draak!",
+                icon: "🐉",
+                enemy: { name: "Vergelyking Draak", avatar: "🐲", health: 3 },
+                xpReward: 50,
+                gemReward: 3,
+                content: `
+                    <div class="tip-box">
+                        <strong>Selfstandige naamwoord</strong> – name van dinge (kat, huis)<br>
+                        <strong>Werkwoord</strong> – doen-woord (hardloop, eet)<br>
+                        <strong>Byvoeglike naamwoord</strong> – beskryf dinge (groot, mooi)<br>
+                        <strong>Bywoord</strong> – beskryf hoe (vinnig, stadig)
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: 'Watter woordsoort is "huis"?',
+                        answer: "selfstandige naamwoord",
+                        feedback: "Koninklike slag! Die koning wankel!"
+                    },
+                    {
+                        question: 'Watter woordsoort is "vinnig" in "Die hond hardloop vinnig"?',
+                        answer: "bywoord",
+                        feedback: "Majestueuse treffer! Die koning verloor sy kroon!"
+                    },
+                    {
+                        question: 'Watter woordsoort is "sing"?',
+                        answer: "werkwoord",
+                        feedback: "FINALE OORWINNING! Jy het die koninkryk gered!"
+                    }
+                ]
+            }
+        ];
+
+        let gameState = {
+            level: 1,
+            xp: 0,
+            attackPower: 1,
+            victories: 0,
+            streak: 0,
+            gems: 0,
+            completedQuests: new Set(),
+            unlockedQuests: new Set([1])
+        };
+
+        let currentBattle = null;
+        let currentQuestionIndex = 0;
+        let enemyHealth = 0;
+
+        function initializeGame() {
+            loadGameState();
+            createQuestNodes();
+            updateUI();
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('afrikaansQuest');
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                gameState = { ...gameState, ...savedState };
+                gameState.completedQuests = new Set(savedState.completedQuests || []);
+                gameState.unlockedQuests = new Set(savedState.unlockedQuests || [1]);
+            }
+        }
+
+        function saveGameState() {
+            const toSave = {
+                ...gameState,
+                completedQuests: Array.from(gameState.completedQuests),
+                unlockedQuests: Array.from(gameState.unlockedQuests)
+            };
+            localStorage.setItem('afrikaansQuest', JSON.stringify(toSave));
+        }
+
+        function createQuestNodes() {
+            const questPath = document.getElementById('questPath');
+            questPath.innerHTML = '';
+
+            quests.forEach(quest => {
+                const node = document.createElement('div');
+                node.className = 'quest-node';
+                
+                const isCompleted = gameState.completedQuests.has(quest.id);
+                const isUnlocked = gameState.unlockedQuests.has(quest.id);
+                
+                if (isCompleted) {
+                    node.classList.add('completed');
+                } else if (!isUnlocked) {
+                    node.classList.add('locked');
+                }
+
+                node.onclick = () => {
+                    if (isUnlocked && !isCompleted) {
+                        startBattle(quest.id);
+                    } else if (isCompleted) {
+                        showCompletedMessage(quest.title);
+                    }
+                };
+
+                node.innerHTML = `
+                    <div class="quest-number">${quest.id}</div>
+                    <div class="quest-icon">${quest.icon}</div>
+                    <div class="quest-title">${quest.title}</div>
+                    <div class="quest-description">${quest.description}</div>
+                    <div class="quest-rewards">
+                        <div class="reward-item">+${quest.xpReward} XP</div>
+                        <div class="reward-item">+${quest.gemReward} 💎</div>
+                    </div>
+                `;
+
+                questPath.appendChild(node);
+            });
+        }
+
+        function startBattle(questId) {
+            const quest = quests.find(q => q.id === questId);
+            if (!quest) return;
+
+            currentBattle = quest;
+            currentQuestionIndex = 0;
+            enemyHealth = quest.enemy.health;
+
+            document.getElementById('battleTitle').textContent = `Geveg: ${quest.enemy.name}`;
+            
+            const battleInterface = document.getElementById('battleInterface');
+            battleInterface.innerHTML = `
+                <div class="enemy-info">
+                    <div class="enemy-avatar">${quest.enemy.avatar}</div>
+                    <div class="enemy-name">${quest.enemy.name}</div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="enemyHealthFill" style="width: 100%"></div>
+                    </div>
+                    <div>Gesondheid: <span id="enemyHealthText">${enemyHealth}</span>/${quest.enemy.health}</div>
+                </div>
+
+                ${quest.content}
+
+                <div id="battleQuestions">
+                    ${renderBattleQuestion()}
+                </div>
+            `;
+
+            document.getElementById('battleModal').style.display = 'block';
+        }
+
+        function renderBattleQuestion() {
+            if (currentQuestionIndex >= currentBattle.questions.length) {
+                return '';
+            }
+
+            const question = currentBattle.questions[currentQuestionIndex];
+            return `
+                <div class="question-battle">
+                    <div class="question-text">⚔️ Vraag ${currentQuestionIndex + 1}: ${question.question}</div>
+                    <input type="text" class="answer-input" id="battleAnswer" placeholder="Jou antwoord..." 
+                           onkeypress="if(event.key==='Enter') attackEnemy()">
+                    <button class="attack-btn" onclick="attackEnemy()">🗡️ VAL AAN!</button>
+                    <div class="battle-feedback" id="battleFeedback" style="display: none;"></div>
+                </div>
+            `;
+        }
+
+        function attackEnemy() {
+            const answer = document.getElementById('battleAnswer').value.toLowerCase().trim();
+            const question = currentBattle.questions[currentQuestionIndex];
+            const correctAnswer = question.answer.toLowerCase().trim();
+            const feedback = document.getElementById('battleFeedback');
+
+            const isCorrect = answer === correctAnswer || 
+                            (correctAnswer.includes(' ') && answer.replace(/\s+/g, ' ') === correctAnswer);
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                enemyHealth--;
+                gameState.streak++;
+                
+                feedback.className = 'battle-feedback victory';
+                feedback.innerHTML = `⚔️ ${question.feedback}`;
+                
+                // Update enemy health display
+                const healthPercentage = (enemyHealth / currentBattle.enemy.health) * 100;
+                document.getElementById('enemyHealthFill').style.width = `${healthPercentage}%`;
+                document.getElementById('enemyHealthText').textContent = enemyHealth;
+
+                // Show floating XP
+                showFloatingXP(10);
+                gameState.xp += 10;
+
+                if (enemyHealth <= 0) {
+                    setTimeout(() => {
+                        victorySequence();
+                    }, 1500);
+                } else {
+                    currentQuestionIndex++;
+                    setTimeout(() => {
+                        document.getElementById('battleQuestions').innerHTML = renderBattleQuestion();
+                    }, 2000);
+                }
+            } else {
+                gameState.streak = 0;
+                feedback.className = 'battle-feedback defeat';
+                feedback.innerHTML = `❌ Gemis! Die vyand ontduik jou aanval. Probeer weer!<br>
+                                    <small>Leidraad: ${question.answer}</small>`;
+            }
+
+            updateUI();
+            saveGameState();
+        }
+
+        function victorySequence() {
+            const battleInterface = document.getElementById('battleInterface');
+            battleInterface.innerHTML = `
+                <div class="victory-celebration">
+                    <div style="font-size: 4em; margin-bottom: 20px;">🎉</div>
+                    <h2>OORWINNING!</h2>
+                    <p>Jy het die ${currentBattle.enemy.name} verslaan!</p>
+                    <div style="margin: 20px 0; font-size: 1.3em;">
+                        <div>🏆 +${currentBattle.xpReward} XP</div>
+                        <div>💎 +${currentBattle.gemReward} Edelstene</div>
+                        <div>⚔️ +1 Aanvals Krag</div>
+                    </div>
+                </div>
+            `;
+
+            // Award rewards
+            gameState.xp += currentBattle.xpReward;
+            gameState.gems += currentBattle.gemReward;
+            gameState.victories++;
+            gameState.attackPower++;
+            gameState.completedQuests.add(currentBattle.id);
+
+            // Unlock next quest
+            if (currentBattle.id < quests.length) {
+                gameState.unlockedQuests.add(currentBattle.id + 1);
+            }
+
+            // Level up check
+            checkLevelUp();
+
+            // Create celebration particles
+            createCelebrationParticles();
+
+            setTimeout(() => {
+                closeBattle();
+                createQuestNodes();
+                updateUI();
+            }, 3000);
+
+            saveGameState();
+        }
+
+        function checkLevelUp() {
+            const xpForNextLevel = gameState.level * 100;
+            if (gameState.xp >= xpForNextLevel) {
+                gameState.level++;
+                gameState.xp -= xpForNextLevel;
+                
+                // Level up effects
+                showFloatingXP('LEVEL UP!');
+                updateCharacterAvatar();
+            }
+        }
+
+        function updateCharacterAvatar() {
+            const avatars = ['🧙‍♂️', '🧙‍♀️', '⚔️', '🏰', '👑', '🌟', '🔮'];
+            const avatar = avatars[Math.min(gameState.level - 1, avatars.length - 1)];
+            document.getElementById('characterAvatar').textContent = avatar;
+        }
+
+        function showFloatingXP(text) {
+            const floatingXP = document.createElement('div');
+            floatingXP.className = 'floating-xp';
+            floatingXP.textContent = `+${text}`;
+            floatingXP.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            floatingXP.style.top = window.innerHeight / 2 + 'px';
+            document.body.appendChild(floatingXP);
+
+            setTimeout(() => {
+                document.body.removeChild(floatingXP);
+            }, 2000);
+        }
+
+        function createCelebrationParticles() {
+            const particles = ['🎉', '⭐', '💫', '✨', '🏆'];
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'fixed';
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = Math.random() * window.innerHeight + 'px';
+                    particle.style.fontSize = '2em';
+                    particle.style.pointerEvents = 'none';
+                    particle.style.animation = 'floatUp 3s ease-out forwards';
+                    particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                    document.body.appendChild(particle);
+
+                    setTimeout(() => {
+                        if (document.body.contains(particle)) {
+                            document.body.removeChild(particle);
+                        }
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+
+        function updateUI() {
+            // Update character info
+            document.getElementById('characterLevel').textContent = `Vlak ${gameState.level} ${getLevelTitle()}`;
+            
+            const xpForNextLevel = gameState.level * 100;
+            const xpPercentage = (gameState.xp / xpForNextLevel) * 100;
+            document.getElementById('xpFill').style.width = `${xpPercentage}%`;
+            document.getElementById('currentXP').textContent = gameState.xp;
+            document.getElementById('nextLevelXP').textContent = xpForNextLevel;
+
+            // Update stats
+            document.getElementById('attackPower').textContent = gameState.attackPower;
+            document.getElementById('victories').textContent = gameState.victories;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('gems').textContent = gameState.gems;
+
+            updateCharacterAvatar();
+        }
+
+        function getLevelTitle() {
+            const titles = ['Beginner', 'Leerling', 'Kenner', 'Meester', 'Held', 'Legende', 'Kampioen'];
+            return titles[Math.min(gameState.level - 1, titles.length - 1)];
+        }
+
+        function showCompletedMessage(questTitle) {
+            alert(`🏆 Jy het "${questTitle}" reeds voltooi! Goed gedaan, held!`);
+        }
+
+        function closeBattle() {
+            document.getElementById('battleModal').style.display = 'none';
+            currentBattle = null;
+            currentQuestionIndex = 0;
+        }
+
+        // Initialize the game
+        window.onload = initializeGame;
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('battleModal');
+            if (event.target === modal) {
+                closeBattle();
+            }
+        }
+    </script>
+</body>
+</html>
+                        <strong>Stellend</strong> – basisvorm: Die hond is vinnig.<br>
+                        <strong>Vergrotend</strong> – voeg "-er" of "meer" by: Die hond is vinniger as die kat.<br>
+                        <strong>Oortreffend</strong> – voeg "-ste" of "mees" by: Die hond is die vinnigste van almal.
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: 'Watter trap is "mooi" in "Sy rok is mooier as myne"?',
+                        answer: "vergrotend",
+                        feedback: "Perfekte aanval! Die draak verloor krag!"
+                    },
+                    {
+                        question: 'Voltooi: Die reier is die ______ voël in die dam.',
+                        answer: "vinnigste",
+                        feedback: "Kritieke treffer! Die draak wankel!"
+                    },
+                    {
+                        question: 'Watter woord gebruik ons vir vergrotend by "interessant"?',
+                        answer: "meer interessant",
+                        feedback: "Finale slag! Die draak is verslaan!"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Meervoude",
+                description: "Stop die Meervoud Trol!",
+                icon: "👹",
+                enemy: { name: "Meervoud Trol", avatar: "👹", health: 2 },
+                xpReward: 60,
+                gemReward: 4,
+                content: `
+                    <div class="tip-box">
+                        <strong>Enkelklank:</strong> kat → katte<br>
+                        <strong>Dubbelklank:</strong> boom → bome<br>
+                        <strong>Eindig op "f":</strong> gif → giwwe<br>
+                        <strong>Onreëlmatig:</strong> kind → kinders
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: 'Wat is die meervoud van "stoel"?',
+                        answer: "stoele",
+                        feedback: "Magtige slag! Die trol struikel!"
+                    },
+                    {
+                        question: 'Gee die meervoud van "boek".',
+                        answer: "boeke",
+                        feedback: "Oorwinning! Die trol is verslaan!"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Voorsetsels",
+                description: "Verslaan die Posisie Heks!",
+                icon: "🧙‍♀️",
+                enemy: { name: "Posisie Heks", avatar: "🧙‍♀️", health: 2 },
+                xpReward: 70,
+                gemReward: 5,
+                content: `
+                    <div class="tip-box">
+                        Voorbeelde: <strong>op</strong> (on), <strong>onder</strong> (under), <strong>tussen</strong> (between), <strong>langs</strong> (next to)
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: 'Vul in: Die bal is ______ die boks. (inside the box)',
+                        answer: "in",
+                        feedback: "Towerkrag! Die heks se betowering breek!"
+                    },
+                    {
+                        question: 'Kies: tussen / op – "Die brug is _____ die twee dorpe."',
+                        answer: "tussen",
+                        feedback: "Finale betowering! Die heks is verslaan!"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Direkte en Indirekte Rede",
+                description: "Stop die Gesprek Ghouls!",
+                icon: "👻",
+                enemy: { name: "Gesprek Ghoul", avatar: "👻", health: 2 },
+                xpReward: 80,
+                gemReward: 6,
+                content: `
+                    <div class="tip-box">
+                        <strong>Direkte rede:</strong> Hy sê: "Ek hou van sjokolade."<br>
+                        <strong>Indirekte rede:</strong> Hy sê dat hy van sjokolade hou.
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: 'Skryf in indirekte rede: Anna sê: "Ek is moeg."',
+                        answer: "Anna sê dat sy moeg is",
+                        feedback: "Geestelike aanval! Die ghoul verdwyn!"
+                    },
+                    {
+                        question: 'Watter woord gebruik ons gewoonlik in indirekte rede?',
+                        answer: "dat",
+                        feedback: "Finale ekorsisme! Die ghoul is weg!"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Idiome",
+                description: "Verslaan die Idioom Reuse!",
+                icon: "🦣",
+                enemy: { name: "Idioom Reus", avatar: "🦣", health: 2 },
+                xpReward: 90,
+                gemReward: 7,
+                content: `
+                    <div class="tip-box">
+                        "Hy het lang vingers" = Hy steel<br>
+                        "Die kat uit die sak laat" = 'n geheim verklap<br>
+                        "Met die deur in die huis val" = dadelik tot die punt kom
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: 'Wat beteken "Sy oë is groter as sy maag"?',
+                        answer: "hy skep te veel kos op",
+                        feedback: "Reuse slag! Die reus val terug!"
+                    },
+                    {
+                        question: 'Vul aan: "Hulle is soos hond en ___."',
+                        answer: "kat",
+                        feedback: "Oorwinning! Die reus is verslaan!"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Woordorde (STOMPI)",
+                description: "Stop die STOMPI Skelmpie!",
+                icon: "🦴",
+                enemy: { name: "STOMPI Skelet", avatar: "💀", health: 2 },
+                xpReward: 100,
+                gemReward: 8,
+                content: `
+                    <div class="tip-box">
+                        <strong>S</strong>onderwerp <strong>T</strong>yd <strong>O</strong>voorwerp <strong>M</strong>wyse <strong>P</strong>plek <strong>I</strong>infinitief
+                    </div>
+                `,
+                questions: [
+                    {
+                        question: 'Watter deel van STOMPI wys hoe vinnig iets gebeur?',
+                        answer: "M",
+                        feedback: "Botbreekende slag! Die skelet kraak!"
+                    },
+                    {
+                        question: 'Watter deel kom eerste – tyd of plek?',
+                        answer: "tyd",
+                        feedback: "Finale slag! Die skelet val uiteen!"
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "Woordsoorte",
+                description: "Verslaan die Finale Boss!",
+                icon: "👑",
+                enemy: { name: "Woordsoort Koning", avatar: "👑", health: 3 },
+                xpReward: 150,
+                gemReward: 10,
+                content: `
+                    <div class="tip-box">
+                
