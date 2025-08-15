@@ -3,1204 +3,955 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏰 Afrikaans Avontuur Quest</title>
+    <title>Afrikaans Ruimte Avontuur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(45deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 8s ease infinite;
-            min-height: 100vh;
-            color: #333;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .game-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .game-header {
-            text-align: center;
-            margin-bottom: 30px;
-            animation: heroEntrance 2s ease-out;
-        }
-
-        .game-title {
-            font-size: 3em;
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
-            animation: titleGlow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes titleGlow {
-            from { filter: drop-shadow(0 0 10px #FFD700); }
-            to { filter: drop-shadow(0 0 20px #FFA500); }
-        }
-
-        .character-panel {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .character-panel::before {
-            content: '';
+        
+        .star {
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .character-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5em;
-            animation: avatarBounce 2s ease-in-out infinite;
-            position: relative;
-        }
-
-        @keyframes avatarBounce {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .character-info {
-            flex: 1;
-        }
-
-        .character-name {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .character-level {
-            font-size: 1.2em;
-            color: #3498db;
-            margin-bottom: 10px;
-        }
-
-        .xp-bar {
-            background: #ecf0f1;
-            height: 15px;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .xp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            border-radius: 10px;
-            transition: width 1s ease;
-            position: relative;
-        }
-
-        .xp-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: xpShine 2s infinite;
-        }
-
-        @keyframes xpShine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .stats-panel {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.9);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-        }
-
-        .stat-icon {
-            font-size: 2em;
-            margin-bottom: 10px;
-            animation: iconFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes iconFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            color: #7f8c8d;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .quest-map {
-            background: rgba(255,255,255,0.95);
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        .map-title {
-            text-align: center;
-            font-size: 2em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .quest-path {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            position: relative;
-        }
-
-        .quest-node {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            border-radius: 20px;
-            padding: 25px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            border: 4px solid transparent;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .quest-node::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #f39c12, #e74c3c, #9b59b6, #3498db);
-            border-radius: 22px;
-            z-index: -1;
-            animation: borderGlow 3s linear infinite;
-        }
-
-        @keyframes borderGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .quest-node:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-        }
-
-        .quest-node.completed {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            animation: completedPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes completedPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(46, 204, 113, 0.6); }
-            50% { box-shadow: 0 0 40px rgba(46, 204, 113, 0.9); }
-        }
-
-        .quest-node.locked {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .quest-number {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            background: #e74c3c;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.3em;
-            border: 3px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .quest-icon {
-            font-size: 3em;
-            text-align: center;
-            margin-bottom: 15px;
-            animation: questIconSpin 4s linear infinite;
-        }
-
-        @keyframes questIconSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .quest-title {
-            font-size: 1.4em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .quest-description {
-            font-size: 0.95em;
-            text-align: center;
-            opacity: 0.9;
-            flex: 1;
-        }
-
-        .quest-rewards {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .reward-item {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            animation: modalFadeIn 0.3s ease-out;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 25px;
-            padding: 30px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            color: white;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
-            animation: modalSlideIn 0.5s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -60%) scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(255,255,255,0.3);
-        }
-
-        .modal-title {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-
-        .close-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.3em;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .close-btn:hover {
-            background: #c0392b;
-            transform: scale(1.1);
-        }
-
-        .battle-interface {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 25px;
-            margin: 20px 0;
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-
-        .enemy-info {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .enemy-avatar {
-            font-size: 4em;
-            margin-bottom: 15px;
-            animation: enemyBreathe 2s ease-in-out infinite;
-        }
-
-        @keyframes enemyBreathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .enemy-name {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .health-bar {
-            background: rgba(0,0,0,0.3);
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .health-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #e74c3c, #c0392b);
-            border-radius: 10px;
-            transition: width 0.8s ease;
-        }
-
-        .question-battle {
-            background: rgba(255,255,255,0.95);
-            color: #333;
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .question-text {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .answer-input {
-            width: 100%;
-            padding: 15px;
-            border: 3px solid #3498db;
-            border-radius: 15px;
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .answer-input:focus {
-            outline: none;
-            border-color: #2980b9;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
-        }
-
-        .attack-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            width: 100%;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .attack-btn:hover {
-            background: linear-gradient(135deg, #c0392b, #a93226);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .battle-feedback {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1em;
-            animation: feedbackAppear 0.5s ease-out;
-        }
-
-        @keyframes feedbackAppear {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .battle-feedback.victory {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-        }
-
-        .battle-feedback.defeat {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-        }
-
-        .victory-celebration {
-            text-align: center;
-            padding: 30px;
-            animation: victoryDance 1s ease-in-out infinite;
-        }
-
-        @keyframes victoryDance {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .floating-xp {
-            position: fixed;
-            pointer-events: none;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #f39c12;
-            animation: floatUp 2s ease-out forwards;
-            z-index: 9999;
-        }
-
-        @keyframes floatUp {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-100px) scale(1.2);
-            }
-        }
-
-        .tip-box {
-            background: rgba(255,255,255,0.15);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border-left: 5px solid #f39c12;
-        }
-
-        .tip-box::before {
-            content: "💡 ";
-            font-size: 1.3em;
-        }
-
-        @media (max-width: 768px) {
-            .game-title {
-                font-size: 2em;
-            }
-            
-            .character-panel {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .quest-path {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal-content {
-                padding: 20px;
-                margin: 10px;
-            }
+            color: #fbbf24;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-30px,0); }
+            70% { transform: translate3d(0,-15px,0); }
+            90% { transform: translate3d(0,-4px,0); }
+        }
+        
+        .bounce-on-hover:hover {
+            animation: bounce 1s;
+        }
+        
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
     </style>
 </head>
-<body>
-    <div class="game-container">
-        <div class="game-header">
-            <h1 class="game-title">🏰 Afrikaans Avontuur Quest 🗡️</h1>
-            <p style="color: rgba(255,255,255,0.9); font-size: 1.2em;">Verslaan monsters met Afrikaans kennis!</p>
-        </div>
-
-        <div class="character-panel">
-            <div class="character-avatar" id="characterAvatar">🧙‍♂️</div>
-            <div class="character-info">
-                <div class="character-name">Afrikaans Held</div>
-                <div class="character-level" id="characterLevel">Vlak 1 Beginner</div>
-                <div class="xp-bar">
-                    <div class="xp-fill" id="xpFill" style="width: 0%"></div>
-                </div>
-                <div style="margin-top: 5px; font-size: 0.9em; color: #7f8c8d;">
-                    <span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP
-                </div>
-            </div>
-        </div>
-
-        <div class="stats-panel">
-            <div class="stat-card">
-                <div class="stat-icon">⚔️</div>
-                <div class="stat-value" id="attackPower">1</div>
-                <div class="stat-label">Aanvals Krag</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🏆</div>
-                <div class="stat-value" id="victories">0</div>
-                <div class="stat-label">Oorwinnings</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🔥</div>
-                <div class="stat-value" id="streak">0</div>
-                <div class="stat-label">Wen Reeks</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">💎</div>
-                <div class="stat-value" id="gems">0</div>
-                <div class="stat-label">Edelstene</div>
-            </div>
-        </div>
-
-        <div class="quest-map">
-            <h2 class="map-title">🗺️ Quest Kaart</h2>
-            <div class="quest-path" id="questPath">
-                <!-- Quest nodes will be populated by JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Battle Modal -->
-    <div class="modal" id="battleModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="battleTitle">Geveg Begin!</h2>
-                <button class="close-btn" onclick="closeBattle()">×</button>
-            </div>
-            
-            <div class="battle-interface" id="battleInterface">
-                <!-- Battle content will be populated by JavaScript -->
-            </div>
-        </div>
-    </div>
+<body class="min-h-screen bg-gradient-to-b from-purple-900 via-blue-900 to-indigo-900 text-white overflow-x-hidden">
+    <div id="app"></div>
 
     <script>
-        const quests = [
+        // App State
+        let gameState = {
+            currentLesson: 0,
+            currentQuestion: 0,
+            score: 0,
+            streak: 0,
+            showResult: false,
+            selectedAnswer: '',
+            isCorrect: false,
+            gamePhase: 'planet-select',
+            totalStars: 0,
+            completedLessons: new Set(),
+            showHint: false
+        };
+
+        // Lessons Data
+        const lessons = [
             {
                 id: 1,
                 title: "Trappe van Vergelyking",
-                description: "Verslaan die Vergelyking Draak!",
-                icon: "🐉",
-                enemy: { name: "Vergelyking Draak", avatar: "🐲", health: 3 },
-                xpReward: 50,
-                gemReward: 3,
-                content: `
-                    <div class="tip-box">
-                        <strong>Selfstandige naamwoord</strong> – name van dinge (kat, huis)<br>
-                        <strong>Werkwoord</strong> – doen-woord (hardloop, eet)<br>
-                        <strong>Byvoeglike naamwoord</strong> – beskryf dinge (groot, mooi)<br>
-                        <strong>Bywoord</strong> – beskryf hoe (vinnig, stadig)
-                    </div>
-                `,
-                questions: [
-                    {
-                        question: 'Watter woordsoort is "huis"?',
-                        answer: "selfstandige naamwoord",
-                        feedback: "Koninklike slag! Die koning wankel!"
-                    },
-                    {
-                        question: 'Watter woordsoort is "vinnig" in "Die hond hardloop vinnig"?',
-                        answer: "bywoord",
-                        feedback: "Majestueuse treffer! Die koning verloor sy kroon!"
-                    },
-                    {
-                        question: 'Watter woordsoort is "sing"?',
-                        answer: "werkwoord",
-                        feedback: "FINALE OORWINNING! Jy het die koninkryk gered!"
-                    }
-                ]
-            }
-        ];
-
-        let gameState = {
-            level: 1,
-            xp: 0,
-            attackPower: 1,
-            victories: 0,
-            streak: 0,
-            gems: 0,
-            completedQuests: new Set(),
-            unlockedQuests: new Set([1])
-        };
-
-        let currentBattle = null;
-        let currentQuestionIndex = 0;
-        let enemyHealth = 0;
-
-        function initializeGame() {
-            loadGameState();
-            createQuestNodes();
-            updateUI();
-        }
-
-        function loadGameState() {
-            const saved = localStorage.getItem('afrikaansQuest');
-            if (saved) {
-                const savedState = JSON.parse(saved);
-                gameState = { ...gameState, ...savedState };
-                gameState.completedQuests = new Set(savedState.completedQuests || []);
-                gameState.unlockedQuests = new Set(savedState.unlockedQuests || [1]);
-            }
-        }
-
-        function saveGameState() {
-            const toSave = {
-                ...gameState,
-                completedQuests: Array.from(gameState.completedQuests),
-                unlockedQuests: Array.from(gameState.unlockedQuests)
-            };
-            localStorage.setItem('afrikaansQuest', JSON.stringify(toSave));
-        }
-
-        function createQuestNodes() {
-            const questPath = document.getElementById('questPath');
-            questPath.innerHTML = '';
-
-            quests.forEach(quest => {
-                const node = document.createElement('div');
-                node.className = 'quest-node';
-                
-                const isCompleted = gameState.completedQuests.has(quest.id);
-                const isUnlocked = gameState.unlockedQuests.has(quest.id);
-                
-                if (isCompleted) {
-                    node.classList.add('completed');
-                } else if (!isUnlocked) {
-                    node.classList.add('locked');
-                }
-
-                node.onclick = () => {
-                    if (isUnlocked && !isCompleted) {
-                        startBattle(quest.id);
-                    } else if (isCompleted) {
-                        showCompletedMessage(quest.title);
-                    }
-                };
-
-                node.innerHTML = `
-                    <div class="quest-number">${quest.id}</div>
-                    <div class="quest-icon">${quest.icon}</div>
-                    <div class="quest-title">${quest.title}</div>
-                    <div class="quest-description">${quest.description}</div>
-                    <div class="quest-rewards">
-                        <div class="reward-item">+${quest.xpReward} XP</div>
-                        <div class="reward-item">+${quest.gemReward} 💎</div>
-                    </div>
-                `;
-
-                questPath.appendChild(node);
-            });
-        }
-
-        function startBattle(questId) {
-            const quest = quests.find(q => q.id === questId);
-            if (!quest) return;
-
-            currentBattle = quest;
-            currentQuestionIndex = 0;
-            enemyHealth = quest.enemy.health;
-
-            document.getElementById('battleTitle').textContent = `Geveg: ${quest.enemy.name}`;
-            
-            const battleInterface = document.getElementById('battleInterface');
-            battleInterface.innerHTML = `
-                <div class="enemy-info">
-                    <div class="enemy-avatar">${quest.enemy.avatar}</div>
-                    <div class="enemy-name">${quest.enemy.name}</div>
-                    <div class="health-bar">
-                        <div class="health-fill" id="enemyHealthFill" style="width: 100%"></div>
-                    </div>
-                    <div>Gesondheid: <span id="enemyHealthText">${enemyHealth}</span>/${quest.enemy.health}</div>
-                </div>
-
-                ${quest.content}
-
-                <div id="battleQuestions">
-                    ${renderBattleQuestion()}
-                </div>
-            `;
-
-            document.getElementById('battleModal').style.display = 'block';
-        }
-
-        function renderBattleQuestion() {
-            if (currentQuestionIndex >= currentBattle.questions.length) {
-                return '';
-            }
-
-            const question = currentBattle.questions[currentQuestionIndex];
-            return `
-                <div class="question-battle">
-                    <div class="question-text">⚔️ Vraag ${currentQuestionIndex + 1}: ${question.question}</div>
-                    <input type="text" class="answer-input" id="battleAnswer" placeholder="Jou antwoord..." 
-                           onkeypress="if(event.key==='Enter') attackEnemy()">
-                    <button class="attack-btn" onclick="attackEnemy()">🗡️ VAL AAN!</button>
-                    <div class="battle-feedback" id="battleFeedback" style="display: none;"></div>
-                </div>
-            `;
-        }
-
-        function attackEnemy() {
-            const answer = document.getElementById('battleAnswer').value.toLowerCase().trim();
-            const question = currentBattle.questions[currentQuestionIndex];
-            const correctAnswer = question.answer.toLowerCase().trim();
-            const feedback = document.getElementById('battleFeedback');
-
-            const isCorrect = answer === correctAnswer || 
-                            (correctAnswer.includes(' ') && answer.replace(/\s+/g, ' ') === correctAnswer);
-
-            feedback.style.display = 'block';
-
-            if (isCorrect) {
-                enemyHealth--;
-                gameState.streak++;
-                
-                feedback.className = 'battle-feedback victory';
-                feedback.innerHTML = `⚔️ ${question.feedback}`;
-                
-                // Update enemy health display
-                const healthPercentage = (enemyHealth / currentBattle.enemy.health) * 100;
-                document.getElementById('enemyHealthFill').style.width = `${healthPercentage}%`;
-                document.getElementById('enemyHealthText').textContent = enemyHealth;
-
-                // Show floating XP
-                showFloatingXP(10);
-                gameState.xp += 10;
-
-                if (enemyHealth <= 0) {
-                    setTimeout(() => {
-                        victorySequence();
-                    }, 1500);
-                } else {
-                    currentQuestionIndex++;
-                    setTimeout(() => {
-                        document.getElementById('battleQuestions').innerHTML = renderBattleQuestion();
-                    }, 2000);
-                }
-            } else {
-                gameState.streak = 0;
-                feedback.className = 'battle-feedback defeat';
-                feedback.innerHTML = `❌ Gemis! Die vyand ontduik jou aanval. Probeer weer!<br>
-                                    <small>Leidraad: ${question.answer}</small>`;
-            }
-
-            updateUI();
-            saveGameState();
-        }
-
-        function victorySequence() {
-            const battleInterface = document.getElementById('battleInterface');
-            battleInterface.innerHTML = `
-                <div class="victory-celebration">
-                    <div style="font-size: 4em; margin-bottom: 20px;">🎉</div>
-                    <h2>OORWINNING!</h2>
-                    <p>Jy het die ${currentBattle.enemy.name} verslaan!</p>
-                    <div style="margin: 20px 0; font-size: 1.3em;">
-                        <div>🏆 +${currentBattle.xpReward} XP</div>
-                        <div>💎 +${currentBattle.gemReward} Edelstene</div>
-                        <div>⚔️ +1 Aanvals Krag</div>
-                    </div>
-                </div>
-            `;
-
-            // Award rewards
-            gameState.xp += currentBattle.xpReward;
-            gameState.gems += currentBattle.gemReward;
-            gameState.victories++;
-            gameState.attackPower++;
-            gameState.completedQuests.add(currentBattle.id);
-
-            // Unlock next quest
-            if (currentBattle.id < quests.length) {
-                gameState.unlockedQuests.add(currentBattle.id + 1);
-            }
-
-            // Level up check
-            checkLevelUp();
-
-            // Create celebration particles
-            createCelebrationParticles();
-
-            setTimeout(() => {
-                closeBattle();
-                createQuestNodes();
-                updateUI();
-            }, 3000);
-
-            saveGameState();
-        }
-
-        function checkLevelUp() {
-            const xpForNextLevel = gameState.level * 100;
-            if (gameState.xp >= xpForNextLevel) {
-                gameState.level++;
-                gameState.xp -= xpForNextLevel;
-                
-                // Level up effects
-                showFloatingXP('LEVEL UP!');
-                updateCharacterAvatar();
-            }
-        }
-
-        function updateCharacterAvatar() {
-            const avatars = ['🧙‍♂️', '🧙‍♀️', '⚔️', '🏰', '👑', '🌟', '🔮'];
-            const avatar = avatars[Math.min(gameState.level - 1, avatars.length - 1)];
-            document.getElementById('characterAvatar').textContent = avatar;
-        }
-
-        function showFloatingXP(text) {
-            const floatingXP = document.createElement('div');
-            floatingXP.className = 'floating-xp';
-            floatingXP.textContent = `+${text}`;
-            floatingXP.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-            floatingXP.style.top = window.innerHeight / 2 + 'px';
-            document.body.appendChild(floatingXP);
-
-            setTimeout(() => {
-                document.body.removeChild(floatingXP);
-            }, 2000);
-        }
-
-        function createCelebrationParticles() {
-            const particles = ['🎉', '⭐', '💫', '✨', '🏆'];
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    const particle = document.createElement('div');
-                    particle.style.position = 'fixed';
-                    particle.style.left = Math.random() * window.innerWidth + 'px';
-                    particle.style.top = Math.random() * window.innerHeight + 'px';
-                    particle.style.fontSize = '2em';
-                    particle.style.pointerEvents = 'none';
-                    particle.style.animation = 'floatUp 3s ease-out forwards';
-                    particle.textContent = particles[Math.floor(Math.random() * particles.length)];
-                    document.body.appendChild(particle);
-
-                    setTimeout(() => {
-                        if (document.body.contains(particle)) {
-                            document.body.removeChild(particle);
+                subtitle: "Degrees of Comparison",
+                icon: "🚀",
+                content: {
+                    intro: "Welkom, ruimtereisiger! Vandag leer ons hoe om dinge in die ruimte te vergelyk.",
+                    explanation: "In Afrikaans gebruik ons trappe van vergelyking om dinge te vergelyk - soos planete, sterre en ruimteskepe!",
+                    examples: [
+                        {
+                            title: "Stellend (Basic Form)",
+                            example: "Die ruimteskip is vinnig.",
+                            translation: "The spaceship is fast.",
+                            icon: "🛸"
+                        },
+                        {
+                            title: "Vergrotend (Comparative)",
+                            example: "Die ruimteskip is vinniger as die komeet.",
+                            translation: "The spaceship is faster than the comet.",
+                            icon: "⚡"
+                        },
+                        {
+                            title: "Oortreffend (Superlative)",
+                            example: "Die ruimteskip is die vinnigste in die heelal.",
+                            translation: "The spaceship is the fastest in the universe.",
+                            icon: "🌟"
                         }
-                    }, 3000);
-                }, i * 100);
-            }
-        }
-
-        function updateUI() {
-            // Update character info
-            document.getElementById('characterLevel').textContent = `Vlak ${gameState.level} ${getLevelTitle()}`;
-            
-            const xpForNextLevel = gameState.level * 100;
-            const xpPercentage = (gameState.xp / xpForNextLevel) * 100;
-            document.getElementById('xpFill').style.width = `${xpPercentage}%`;
-            document.getElementById('currentXP').textContent = gameState.xp;
-            document.getElementById('nextLevelXP').textContent = xpForNextLevel;
-
-            // Update stats
-            document.getElementById('attackPower').textContent = gameState.attackPower;
-            document.getElementById('victories').textContent = gameState.victories;
-            document.getElementById('streak').textContent = gameState.streak;
-            document.getElementById('gems').textContent = gameState.gems;
-
-            updateCharacterAvatar();
-        }
-
-        function getLevelTitle() {
-            const titles = ['Beginner', 'Leerling', 'Kenner', 'Meester', 'Held', 'Legende', 'Kampioen'];
-            return titles[Math.min(gameState.level - 1, titles.length - 1)];
-        }
-
-        function showCompletedMessage(questTitle) {
-            alert(`🏆 Jy het "${questTitle}" reeds voltooi! Goed gedaan, held!`);
-        }
-
-        function closeBattle() {
-            document.getElementById('battleModal').style.display = 'none';
-            currentBattle = null;
-            currentQuestionIndex = 0;
-        }
-
-        // Initialize the game
-        window.onload = initializeGame;
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('battleModal');
-            if (event.target === modal) {
-                closeBattle();
-            }
-        }
-    </script>
-</body>
-</html>
-                        <strong>Stellend</strong> – basisvorm: Die hond is vinnig.<br>
-                        <strong>Vergrotend</strong> – voeg "-er" of "meer" by: Die hond is vinniger as die kat.<br>
-                        <strong>Oortreffend</strong> – voeg "-ste" of "mees" by: Die hond is die vinnigste van almal.
-                    </div>
-                `,
+                    ],
+                    tip: "💡 Onthou: stellend = gewoon, vergrotend = vergelyk, oortreffend = die beste!"
+                },
                 questions: [
                     {
-                        question: 'Watter trap is "mooi" in "Sy rok is mooier as myne"?',
-                        answer: "vergrotend",
-                        feedback: "Perfekte aanval! Die draak verloor krag!"
+                        type: "multiple-choice",
+                        question: "Watter trap is 'mooi' in 'Die planeet is mooier as die maan'?",
+                        options: ["Stellend", "Vergrotend", "Oortreffend"],
+                        correct: 1,
+                        hint: "Kyk na die woord 'mooier' - dit vergelyk twee dinge!"
                     },
                     {
-                        question: 'Voltooi: Die reier is die ______ voël in die dam.',
-                        answer: "vinnigste",
-                        feedback: "Kritieke treffer! Die draak wankel!"
+                        type: "fill-in",
+                        question: "Voltooi: Die ster is die (helder) ______ in die lug.",
+                        correct: "helderste",
+                        hint: "Gebruik die oortreffende trap - voeg '-ste' by!"
                     },
                     {
-                        question: 'Watter woord gebruik ons vir vergrotend by "interessant"?',
-                        answer: "meer interessant",
-                        feedback: "Finale slag! Die draak is verslaan!"
+                        type: "multiple-choice",
+                        question: "Watter woord gebruik ons vir vergrotend by 'interessant'?",
+                        options: ["interessanter", "meer interessant", "interessantste"],
+                        correct: 1,
+                        hint: "By lang woorde gebruik ons 'meer' vir die vergrotende trap!"
                     }
                 ]
             },
             {
                 id: 2,
                 title: "Meervoude",
-                description: "Stop die Meervoud Trol!",
-                icon: "👹",
-                enemy: { name: "Meervoud Trol", avatar: "👹", health: 2 },
-                xpReward: 60,
-                gemReward: 4,
-                content: `
-                    <div class="tip-box">
-                        <strong>Enkelklank:</strong> kat → katte<br>
-                        <strong>Dubbelklank:</strong> boom → bome<br>
-                        <strong>Eindig op "f":</strong> gif → giwwe<br>
-                        <strong>Onreëlmatig:</strong> kind → kinders
-                    </div>
-                `,
+                subtitle: "Plurals",
+                icon: "🌌",
+                content: {
+                    intro: "Kom ons ontdek hoe om baie sterre, planete en ruimterotsies te beskryf!",
+                    explanation: "Meervoude wys vir ons dat daar meer as een van iets is in die ruimte.",
+                    examples: [
+                        {
+                            title: "Enkelklank → voeg 'e' by",
+                            example: "ster → sterre",
+                            translation: "star → stars",
+                            icon: "⭐"
+                        },
+                        {
+                            title: "Dubbelklank → verander",
+                            example: "maan → mane",
+                            translation: "moon → moons",
+                            icon: "🌙"
+                        },
+                        {
+                            title: "Eindig op 'f' → verander na 'we'",
+                            example: "sif → siwwe",
+                            translation: "sieve → sieves",
+                            icon: "🔍"
+                        },
+                        {
+                            title: "Onreëlmatig",
+                            example: "ruimtewese → ruimtewesens",
+                            translation: "space being → space beings",
+                            icon: "👽"
+                        }
+                    ],
+                    tip: "💡 Kyk na die klinkers en eindletters om die regte reël te kies!"
+                },
                 questions: [
                     {
-                        question: 'Wat is die meervoud van "stoel"?',
-                        answer: "stoele",
-                        feedback: "Magtige slag! Die trol struikel!"
+                        type: "multiple-choice",
+                        question: "Wat is die meervoud van 'stoel'?",
+                        options: ["stoele", "stoels", "stoel"],
+                        correct: 0,
+                        hint: "Enkelklank woord - voeg 'e' by!"
                     },
                     {
-                        question: 'Gee die meervoud van "boek".',
-                        answer: "boeke",
-                        feedback: "Oorwinning! Die trol is verslaan!"
+                        type: "multiple-choice",
+                        question: "Watter reël pas by 'sif → siwwe'?",
+                        options: ["Voeg 'e' by", "Eindig op 'f' → verander na 'wwe'", "Dubbelklank reël"],
+                        correct: 1,
+                        hint: "Kyk na hoe die 'f' verander!"
+                    },
+                    {
+                        type: "fill-in",
+                        question: "Gee die meervoud van 'boek': ______",
+                        correct: "boeke",
+                        hint: "Enkelklank - voeg 'e' by!"
                     }
                 ]
             },
             {
                 id: 3,
                 title: "Voorsetsels",
-                description: "Verslaan die Posisie Heks!",
-                icon: "🧙‍♀️",
-                enemy: { name: "Posisie Heks", avatar: "🧙‍♀️", health: 2 },
-                xpReward: 70,
-                gemReward: 5,
-                content: `
-                    <div class="tip-box">
-                        Voorbeelde: <strong>op</strong> (on), <strong>onder</strong> (under), <strong>tussen</strong> (between), <strong>langs</strong> (next to)
-                    </div>
-                `,
+                subtitle: "Prepositions",
+                icon: "🛰️",
+                content: {
+                    intro: "Leer waar alles in die ruimte is met voorsetsels!",
+                    explanation: "Voorsetsels wys die verhouding tussen ruimtevoorwerpe.",
+                    examples: [
+                        {
+                            title: "Posisie woorde",
+                            example: "Die sateliet is bo die aarde.",
+                            translation: "The satellite is above the earth.",
+                            icon: "🛰️"
+                        },
+                        {
+                            title: "Beweging woorde",
+                            example: "Die ruimteskip vlieg deur die wolk.",
+                            translation: "The spaceship flies through the cloud.",
+                            icon: "☁️"
+                        },
+                        {
+                            title: "Plek woorde",
+                            example: "Die astronaut is in die ruimte.",
+                            translation: "The astronaut is in space.",
+                            icon: "👨‍🚀"
+                        }
+                    ],
+                    tip: "💡 Voorsetsels verbind die selfstandige naamwoord met die res van die sin!"
+                },
                 questions: [
                     {
-                        question: 'Vul in: Die bal is ______ die boks. (inside the box)',
-                        answer: "in",
-                        feedback: "Towerkrag! Die heks se betowering breek!"
+                        type: "fill-in",
+                        question: "Vul in: Die bal is _____ die boks. (inside)",
+                        correct: "in",
+                        hint: "Watter woord beteken 'binne'?"
                     },
                     {
-                        question: 'Kies: tussen / op – "Die brug is _____ die twee dorpe."',
-                        answer: "tussen",
-                        feedback: "Finale betowering! Die heks is verslaan!"
+                        type: "multiple-choice",
+                        question: "Watter voorsetsel pas by: 'Ons sit _____ die vuur en gesels'?",
+                        options: ["op", "by", "onder"],
+                        correct: 1,
+                        hint: "Waar sit jy gewoonlik relatief tot 'n vuur?"
+                    },
+                    {
+                        type: "multiple-choice",
+                        question: "Kies: tussen / op – 'Die brug is _____ die twee dorpe.'",
+                        options: ["op", "tussen", "onder"],
+                        correct: 1,
+                        hint: "Watter woord wys iets in die middel van twee dinge?"
                     }
                 ]
             },
             {
                 id: 4,
                 title: "Direkte en Indirekte Rede",
-                description: "Stop die Gesprek Ghouls!",
-                icon: "👻",
-                enemy: { name: "Gesprek Ghoul", avatar: "👻", health: 2 },
-                xpReward: 80,
-                gemReward: 6,
-                content: `
-                    <div class="tip-box">
-                        <strong>Direkte rede:</strong> Hy sê: "Ek hou van sjokolade."<br>
-                        <strong>Indirekte rede:</strong> Hy sê dat hy van sjokolade hou.
-                    </div>
-                `,
+                subtitle: "Direct and Indirect Speech",
+                icon: "📡",
+                content: {
+                    intro: "Astronaute moet boodskappe tussen ruimtestasies stuur! Leer hoe om dit reg te doen.",
+                    explanation: "Ons gebruik direkte en indirekte rede om te wys hoe mense praat en wat hulle sê.",
+                    examples: [
+                        {
+                            title: "Direkte Rede (Direct Speech)",
+                            example: "Hy sê: 'Ek hou van sjokolade.'",
+                            translation: "He says: 'I like chocolate.'",
+                            icon: "👨‍🚀"
+                        },
+                        {
+                            title: "Indirekte Rede (Indirect Speech)",
+                            example: "Hy sê dat hy van sjokolade hou.",
+                            translation: "He says that he likes chocolate.",
+                            icon: "📢"
+                        },
+                        {
+                            title: "Vragende sin",
+                            example: "Hy vra of ek klaar is.",
+                            translation: "He asks if I am ready.",
+                            icon: "❓"
+                        }
+                    ],
+                    tip: "💡 Direkte = presiese woorde, Indirekte = vertel wat gesê is sonder aanhalingstekens!"
+                },
                 questions: [
                     {
-                        question: 'Skryf in indirekte rede: Anna sê: "Ek is moeg."',
-                        answer: "Anna sê dat sy moeg is",
-                        feedback: "Geestelike aanval! Die ghoul verdwyn!"
+                        type: "fill-in",
+                        question: "Skryf in indirekte rede: Anna sê: 'Ek is moeg.' → Anna sê _____ sy moeg is.",
+                        correct: "dat",
+                        hint: "Watter woord gebruik ons gewoonlik om indirekte rede te begin?"
                     },
                     {
-                        question: 'Watter woord gebruik ons gewoonlik in indirekte rede?',
-                        answer: "dat",
-                        feedback: "Finale ekorsisme! Die ghoul is weg!"
+                        type: "multiple-choice",
+                        question: "Is 'Hy vra of ek klaar is' direk of indirek?",
+                        options: ["Direk", "Indirek", "Geen van die twee"],
+                        correct: 1,
+                        hint: "Kyk of daar aanhalingstekens is!"
+                    },
+                    {
+                        type: "multiple-choice",
+                        question: "Watter woord gebruik ons gewoonlik in indirekte rede om die sin te verbind?",
+                        options: ["en", "dat", "maar"],
+                        correct: 1,
+                        hint: "Hierdie woord beteken 'that' in Engels!"
                     }
                 ]
             },
             {
                 id: 5,
                 title: "Idiome",
-                description: "Verslaan die Idioom Reuse!",
-                icon: "🦣",
-                enemy: { name: "Idioom Reus", avatar: "🦣", health: 2 },
-                xpReward: 90,
-                gemReward: 7,
-                content: `
-                    <div class="tip-box">
-                        "Hy het lang vingers" = Hy steel<br>
-                        "Die kat uit die sak laat" = 'n geheim verklap<br>
-                        "Met die deur in die huis val" = dadelik tot die punt kom
-                    </div>
-                `,
+                subtitle: "Idioms",
+                icon: "🌠",
+                content: {
+                    intro: "Idiome is soos geheime kodes in die ruimte - hulle beteken iets anders as wat dit lyk!",
+                    explanation: "Idiome gee kleur aan Afrikaans en kan nie woord-vir-woord vertaal word nie.",
+                    examples: [
+                        {
+                            title: "Hy het lang vingers",
+                            example: "Die ruimte seerower het lang vingers.",
+                            translation: "He steals. (He has long fingers = He steals)",
+                            icon: "🦹‍♂️"
+                        },
+                        {
+                            title: "Die kat uit die sak laat",
+                            example: "Hy het die kat uit die sak gelaat oor die geheime missie.",
+                            translation: "Reveal a secret. (Let the cat out of the bag)",
+                            icon: "🐱"
+                        },
+                        {
+                            title: "Met die deur in die huis val",
+                            example: "Die kaptein het met die deur in die huis geval.",
+                            translation: "Get straight to the point.",
+                            icon: "🚪"
+                        }
+                    ],
+                    tip: "💡 Idiome kan nie woord-vir-woord vertaal word nie!"
+                },
                 questions: [
                     {
-                        question: 'Wat beteken "Sy oë is groter as sy maag"?',
-                        answer: "hy skep te veel kos op",
-                        feedback: "Reuse slag! Die reus val terug!"
+                        type: "multiple-choice",
+                        question: "Wat beteken 'Sy oë is groter as sy maag'?",
+                        options: ["Hy het groot oë", "Hy skep te veel kos op", "Hy is honger"],
+                        correct: 1,
+                        hint: "Dink aan iemand wat te veel kos op sy bord sit!"
                     },
                     {
-                        question: 'Vul aan: "Hulle is soos hond en ___."',
-                        answer: "kat",
-                        feedback: "Oorwinning! Die reus is verslaan!"
+                        type: "multiple-choice",
+                        question: "Watter idioom beteken om iets per ongeluk te verklap?",
+                        options: ["Lang vingers hê", "Die kat uit die sak laat", "Met die deur in die huis val"],
+                        correct: 1,
+                        hint: "Dink aan 'n geheim wat uitgekom het!"
+                    },
+                    {
+                        type: "fill-in",
+                        question: "Vul aan: 'Hulle is soos hond en ___.'",
+                        correct: "kat",
+                        hint: "Watter dier veg gewoonlik met honde?"
                     }
                 ]
             },
             {
                 id: 6,
                 title: "Woordorde (STOMPI)",
-                description: "Stop die STOMPI Skelmpie!",
-                icon: "🦴",
-                enemy: { name: "STOMPI Skelet", avatar: "💀", health: 2 },
-                xpReward: 100,
-                gemReward: 8,
-                content: `
-                    <div class="tip-box">
-                        <strong>S</strong>onderwerp <strong>T</strong>yd <strong>O</strong>voorwerp <strong>M</strong>wyse <strong>P</strong>plek <strong>I</strong>infinitief
-                    </div>
-                `,
+                subtitle: "Word Order",
+                icon: "🎯",
+                content: {
+                    intro: "STOMPI help ons om sinne soos 'n ruimteskip te bou - alles moet in die regte volgorde wees!",
+                    explanation: "STOMPI help ons om sinvol sinne te bou in Afrikaans.",
+                    examples: [
+                        {
+                            title: "S - Onderwerp (Subject)",
+                            example: "Ek...",
+                            translation: "I...",
+                            icon: "👨‍🚀"
+                        },
+                        {
+                            title: "T - Tyd (Time)",
+                            example: "...elke dag...",
+                            translation: "...every day...",
+                            icon: "⏰"
+                        },
+                        {
+                            title: "O - Voorwerp (Object)",
+                            example: "...water...",
+                            translation: "...water...",
+                            icon: "💧"
+                        },
+                        {
+                            title: "M - Wyse (Manner)",
+                            example: "...vinnig...",
+                            translation: "...quickly...",
+                            icon: "⚡"
+                        },
+                        {
+                            title: "P - Plek (Place)",
+                            example: "...in die kombuis.",
+                            translation: "...in the kitchen.",
+                            icon: "🏠"
+                        }
+                    ],
+                    tip: "💡 Volledige sin: Ek drink elke dag water vinnig in die kombuis."
+                },
                 questions: [
                     {
-                        question: 'Watter deel van STOMPI wys hoe vinnig iets gebeur?',
-                        answer: "M",
-                        feedback: "Botbreekende slag! Die skelet kraak!"
+                        type: "multiple-choice",
+                        question: "Watter deel van STOMPI wys hoe vinnig iets gebeur?",
+                        options: ["T - Tyd", "M - Wyse", "P - Plek"],
+                        correct: 1,
+                        hint: "Dink aan HOE iets gedoen word!"
                     },
                     {
-                        question: 'Watter deel kom eerste – tyd of plek?',
-                        answer: "tyd",
-                        feedback: "Finale slag! Die skelet val uiteen!"
+                        type: "fill-in",
+                        question: "Plaas in STOMPI volgorde: 'In die park speel die kinders elke Saterdag lekker.' Begin met die onderwerp: ______",
+                        correct: "Die kinders speel elke Saterdag lekker in die park",
+                        hint: "Begin met 'Die kinders' en gebruik STOMPI volgorde!"
+                    },
+                    {
+                        type: "multiple-choice",
+                        question: "Watter deel kom eerste - tyd of plek?",
+                        options: ["Tyd", "Plek", "Dit maak nie saak nie"],
+                        correct: 0,
+                        hint: "Onthou die STOMPI volgorde: S-T-O-M-P-I"
                     }
                 ]
             },
             {
                 id: 7,
                 title: "Woordsoorte",
-                description: "Verslaan die Finale Boss!",
-                icon: "👑",
-                enemy: { name: "Woordsoort Koning", avatar: "👑", health: 3 },
-                xpReward: 150,
-                gemReward: 10,
-                content: `
-                    <div class="tip-box">
-                
+                subtitle: "Parts of Speech",
+                icon: "🧩",
+                content: {
+                    intro: "Elke woord in 'n sin het 'n spesiale werk, soos elke onderdeel van 'n ruimteskip!",
+                    explanation: "Woordsoorte is die verskillende 'tipes' woorde wat ons in Afrikaans gebruik.",
+                    examples: [
+                        {
+                            title: "Selfstandige naamwoord (Noun)",
+                            example: "kat, huis, Anna",
+                            translation: "Names of things, places, or people",
+                            icon: "🏷️"
+                        },
+                        {
+                            title: "Werkwoord (Verb)",
+                            example: "hardloop, eet, sing",
+                            translation: "Action words",
+                            icon: "⚡"
+                        },
+                        {
+                            title: "Byvoeglike naamwoord (Adjective)",
+                            example: "groot hond, mooi rok",
+                            translation: "Describes nouns",
+                            icon: "🎨"
+                        },
+                        {
+                            title: "Bywoord (Adverb)",
+                            example: "hardloop vinnig, eet stadig",
+                            translation: "Describes how actions happen",
+                            icon: "📏"
+                        }
+                    ],
+                    tip: "💡 Elke woordsoort het 'n spesiale werk in die sin!"
+                },
+                questions: [
+                    {
+                        type: "multiple-choice",
+                        question: "Watter woordsoort is 'huis'?",
+                        options: ["Werkwoord", "Selfstandige naamwoord", "Byvoeglike naamwoord"],
+                        correct: 1,
+                        hint: "Dit is die naam van 'n ding!"
+                    },
+                    {
+                        type: "multiple-choice",
+                        question: "Watter woordsoort is 'vinnig' in 'Die hond hardloop vinnig'?",
+                        options: ["Byvoeglike naamwoord", "Bywoord", "Werkwoord"],
+                        correct: 1,
+                        hint: "Dit beskryf HOE die hond hardloop!"
+                    },
+                    {
+                        type: "multiple-choice",
+                        question: "Watter woordsoort is 'sing'?",
+                        options: ["Selfstandige naamwoord", "Werkwoord", "Bywoord"],
+                        correct: 1,
+                        hint: "Dit is 'n doen-woord - iets wat jy KAN doen!"
+                    }
+                ]
+            }
+        ];
+
+        const planets = [
+            { name: "Planeet Vergelyking", color: "from-red-500 to-orange-500", icon: "🚀", lessonId: 0 },
+            { name: "Meervoude Maan", color: "from-blue-500 to-purple-500", icon: "🌌", lessonId: 1 },
+            { name: "Voorsetsel Venus", color: "from-green-500 to-teal-500", icon: "🛰️", lessonId: 2 },
+            { name: "Rede Ruit", color: "from-yellow-500 to-orange-500", icon: "📡", lessonId: 3 },
+            { name: "Idioom Iris", color: "from-purple-500 to-pink-500", icon: "🌠", lessonId: 4 },
+            { name: "STOMPI Saturnus", color: "from-indigo-500 to-blue-500", icon: "🎯", lessonId: 5 },
+            { name: "Woordsoort Wereld", color: "from-pink-500 to-red-500", icon: "🧩", lessonId: 6 }
+        ];
+
+        // Helper Functions
+        function getCurrentLessonData() {
+            return lessons[gameState.currentLesson] || lessons[0];
+        }
+
+        function getCurrentQuestionData() {
+            const lesson = getCurrentLessonData();
+            return lesson?.questions[gameState.currentQuestion];
+        }
+
+        function createStarField() {
+            let stars = '';
+            for (let i = 0; i < 50; i++) {
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 3;
+                const size = Math.random() * 8 + 4;
+                stars += `<div class="star" style="left: ${left}%; top: ${top}%; animation-delay: ${delay}s; font-size: ${size}px;">⭐</div>`;
+            }
+            return stars;
+        }
+
+        // Navigation Functions
+        function selectPlanet(lessonId) {
+            gameState.currentLesson = lessonId;
+            gameState.gamePhase = 'lesson';
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.streak = 0;
+            gameState.showResult = false;
+            gameState.selectedAnswer = '';
+            gameState.showHint = false;
+            render();
+        }
+
+        function backToPlanets() {
+            gameState.gamePhase = 'planet-select';
+            render();
+        }
+
+        function startQuiz() {
+            gameState.gamePhase = 'quiz';
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.streak = 0;
+            render();
+        }
+
+        function handleAnswerSelect(answer) {
+            gameState.selectedAnswer = answer;
+            render();
+        }
+
+        function checkAnswer() {
+            const questionData = getCurrentQuestionData();
+            let correct = false;
+            
+            if (questionData.type === 'multiple-choice') {
+                correct = gameState.selectedAnswer === questionData.options[questionData.correct];
+            } else if (questionData.type === 'fill-in') {
+                correct = gameState.selectedAnswer.toLowerCase().trim() === questionData.correct.toLowerCase();
+            }
+            
+            gameState.isCorrect = correct;
+            gameState.showResult = true;
+            
+            if (correct) {
+                gameState.score += 10;
+                gameState.streak += 1;
+                gameState.totalStars += 1;
+            } else {
+                gameState.streak = 0;
+            }
+            render();
+        }
+
+        function nextQuestion() {
+            const lessonData = getCurrentLessonData();
+            if (gameState.currentQuestion < lessonData.questions.length - 1) {
+                gameState.currentQuestion++;
+            } else {
+                gameState.completedLessons.add(gameState.currentLesson);
+                gameState.gamePhase = 'results';
+            }
+            gameState.showResult = false;
+            gameState.selectedAnswer = '';
+            gameState.showHint = false;
+            render();
+        }
+
+        function nextLesson() {
+            gameState.completedLessons.add(gameState.currentLesson);
+            
+            if (gameState.currentLesson < lessons.length - 1) {
+                gameState.currentLesson++;
+                gameState.gamePhase = 'lesson';
+                gameState.currentQuestion = 0;
+                gameState.score = 0;
+                gameState.streak = 0;
+            } else {
+                gameState.gamePhase = 'planet-select';
+            }
+            render();
+        }
+
+        function restartLesson() {
+            gameState.gamePhase = 'lesson';
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.streak = 0;
+            gameState.showResult = false;
+            gameState.selectedAnswer = '';
+            render();
+        }
+
+        function toggleHint() {
+            gameState.showHint = !gameState.showHint;
+            render();
+        }
+
+        // Render Functions
+        function renderPlanetSelect() {
+            return `
+                <div class="min-h-screen bg-gradient-to-b from-purple-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+                    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+                        ${createStarField()}
+                    </div>
+                    
+                    <div class="relative z-10 container mx-auto px-4 py-8">
+                        <div class="text-center mb-12">
+                            <div class="flex justify-center items-center gap-2 mb-4">
+                                <span class="text-4xl">🚀</span>
+                                <h1 class="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                                    Afrikaans Ruimte Avontuur
+                                </h1>
+                            </div>
+                            <p class="text-xl text-blue-200 mb-6">Kies 'n planeet om jou leerreis te begin!</p>
+                            
+                            <div class="flex justify-center gap-6 text-lg">
+                                <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+                                    <span class="text-yellow-400">⭐</span>
+                                    <span>${gameState.totalStars} Sterre</span>
+                                </div>
+                                <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+                                    <span class="text-green-400">🏆</span>
+                                    <span>${gameState.completedLessons.size} / ${lessons.length} Voltooi</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="max-w-6xl mx-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                ${planets.map((planet, idx) => {
+                                    const isCompleted = gameState.completedLessons.has(planet.lessonId);
+                                    return `
+                                        <div onclick="selectPlanet(${planet.lessonId})" class="relative group cursor-pointer transform hover:scale-105 transition-all duration-300">
+                                            <div class="bg-gradient-to-br ${planet.color} p-6 rounded-3xl border-4 border-white/30 hover:border-white/50 shadow-2xl relative overflow-hidden">
+                                                ${isCompleted ? '<div class="absolute top-3 right-3 bg-green-500 text-white rounded-full p-1"><span class="text-sm">✓</span></div>' : ''}
+                                                
+                                                <div class="text-center mb-4">
+                                                    <div class="text-6xl mb-3 bounce-on-hover">
+                                                        ${planet.icon}
+                                                    </div>
+                                                    <h3 class="text-lg font-bold text-white mb-1">
+                                                        ${planet.name}
+                                                    </h3>
+                                                    <p class="text-sm text-white/80">
+                                                        ${lessons[planet.lessonId]?.title || 'Loading...'}
+                                                    </p>
+                                                    <p class="text-xs text-white/60 italic">
+                                                        ${lessons[planet.lessonId]?.subtitle || ''}
+                                                    </p>
+                                                </div>
+                                                
+                                                <div class="text-center">
+                                                    ${isCompleted ? 
+                                                        '<div class="flex items-center justify-center gap-1 text-green-200 text-sm"><span class="text-yellow-400">⭐</span><span class="font-semibold">Voltooi!</span></div>' :
+                                                        '<div class="text-white/70 font-semibold text-sm">Kliek om te begin</div>'
+                                                    }
+                                                </div>
+                                                
+                                                <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"></div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-12">
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-2xl mx-auto">
+                                <h3 class="text-xl font-bold mb-4 text-yellow-300">🚀 Hoe om te speel:</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-3xl mb-2">🪐</div>
+                                        <p>Kies 'n planeet om te besoek</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-3xl mb-2">📚</div>
+                                        <p>Leer die les en oefen</p>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-3xl mb-2">⭐</div>
+                                        <p>Versamel sterre en voltooi alle planete!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLesson() {
+            const lessonData = getCurrentLessonData();
+            return `
+                <div class="min-h-screen bg-gradient-to-b from-purple-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+                    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+                        ${createStarField()}
+                    </div>
+                    
+                    <div class="relative z-10 container mx-auto px-4 py-8">
+                        <div class="text-center mb-8">
+                            <button onclick="backToPlanets()" class="mb-4 flex items-center gap-2 mx-auto text-blue-300 hover:text-blue-200 transition-colors">
+                                ← Terug na Planete
+                            </button>
+                            
+                            <div class="flex justify-center items-center gap-2 mb-4">
+                                <span class="text-4xl">${lessonData.icon}</span>
+                                <h1 class="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                                    ${lessonData.title}
+                                </h1>
+                            </div>
+                            <div class="flex justify-center gap-4 text-sm">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-yellow-400">⭐</span>
+                                    <span>${gameState.totalStars} Sterre</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-orange-400">🏆</span>
+                                    <span>Les ${gameState.currentLesson + 1} van ${lessons.length}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="max-w-4xl mx-auto">
+                            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 mb-8 border border-white/20">
+                                <div class="text-center mb-6">
+                                    <div class="text-6xl mb-4">${lessonData.icon}</div>
+                                    <h2 class="text-3xl font-bold mb-2">${lessonData.title}</h2>
+                                    <p class="text-blue-200 text-lg">${lessonData.subtitle}</p>
+                                </div>
+
+                                <div class="space-y-6">
+                                    <div class="bg-blue-500/20 rounded-xl p-6">
+                                        <h3 class="text-xl font-semibold mb-3 text-yellow-300">🌟 Inleiding</h3>
+                                        <p class="text-lg">${lessonData.content.intro}</p>
+                                    </div>
+
+                                    <div class="bg-purple-500/20 rounded-xl p-6">
+                                        <h3 class="text-xl font-semibold mb-3 text-yellow-300">📚 Verduideliking</h3>
+                                        <p class="text-lg">${lessonData.content.explanation}</p>
+                                    </div>
+
+                                    <div class="grid gap-4">
+                                        <h3 class="text-xl font-semibold text-yellow-300">🚀 Voorbeelde</h3>
+                                        ${lessonData.content.examples.map(example => `
+                                            <div class="bg-green-500/20 rounded-xl p-6">
+                                                <div class="flex items-start gap-4">
+                                                    <span class="text-3xl">${example.icon}</span>
+                                                    <div>
+                                                        <h4 class="font-semibold text-green-300 mb-2">${example.title}</h4>
+                                                        <p class="text-lg mb-1">${example.example}</p>
+                                                        <p class="text-sm text-gray-300 italic">${example.translation}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+
+                                    <div class="bg-yellow-500/20 rounded-xl p-6">
+                                        <p class="text-lg">${lessonData.content.tip}</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-center mt-8">
+                                    <button onclick="startQuiz()" class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 transform hover:scale-105 transition-all shadow-lg">
+                                        Toets Jou Kennis! →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderQuiz() {
+            const lessonData = getCurrentLessonData();
+            const questionData = getCurrentQuestionData();
+            
+            return `
+                <div class="min-h-screen bg-gradient-to-b from-purple-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+                    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+                        ${createStarField()}
+                    </div>
+                    
+                    <div class="relative z-10 container mx-auto px-4 py-8">
+                        <div class="text-center mb-8">
+                            <button onclick="backToPlanets()" class="mb-4 flex items-center gap-2 mx-auto text-blue-300 hover:text-blue-200 transition-colors">
+                                ← Terug na Planete
+                            </button>
+                            
+                            <div class="flex justify-center items-center gap-4 mb-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-yellow-400">⭐</span>
+                                    <span class="font-bold">${gameState.score}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-orange-400">⚡</span>
+                                    <span class="font-bold">${gameState.streak} Reeks</span>
+                                </div>
+                                <div class="text-sm bg-white/20 px-3 py-1 rounded-full">
+                                    Vraag ${gameState.currentQuestion + 1} van ${lessonData.questions.length}
+                                </div>
+                            </div>
+                            
+                            <div class="w-full bg-white/20 rounded-full h-3 mb-4">
+                                <div class="bg-gradient-to-r from-green-400 to-blue-400 h-3 rounded-full transition-all duration-300" style="width: ${((gameState.currentQuestion + 1) / lessonData.questions.length) * 100}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="max-w-3xl mx-auto">
+                            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                                <h3 class="text-2xl font-bold mb-6 text-center">
+                                    ${questionData.question}
+                                </h3>
+
+                                ${questionData.type === 'multiple-choice' ? `
+                                    <div class="space-y-4 mb-6">
+                                        ${questionData.options.map((option, idx) => `
+                                            <button onclick="handleAnswerSelect('${option}')" class="w-full p-4 rounded-xl text-left font-semibold transition-all transform hover:scale-105 ${
+                                                gameState.selectedAnswer === option
+                                                    ? 'bg-blue-500 text-white border-2 border-blue-300'
+                                                    : 'bg-white/20 hover:bg-white/30 border-2 border-transparent'
+                                            }">
+                                                <span class="mr-3 text-yellow-400 font-bold">${String.fromCharCode(65 + idx)}.</span>
+                                                ${option}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+
+                                ${questionData.type === 'fill-in' ? `
+                                    <div class="mb-6">
+                                        <input type="text" id="fillInAnswer" oninput="handleAnswerSelect(this.value)" value="${gameState.selectedAnswer}" class="w-full p-4 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-gray-300 text-lg" placeholder="Tik jou antwoord hier...">
+                                    </div>
+                                ` : ''}
+
+                                <div class="text-center mb-6">
+                                    <button onclick="toggleHint()" class="text-yellow-300 hover:text-yellow-200 text-sm underline">
+                                        💡 Wenk
+                                    </button>
+                                    ${gameState.showHint ? `
+                                        <div class="mt-2 p-3 bg-yellow-500/20 rounded-lg text-sm">
+                                            ${questionData.hint}
+                                        </div>
+                                    ` : ''}
+                                </div>
+
+                                <div class="flex justify-center gap-4">
+                                    ${!gameState.showResult ? `
+                                        <button onclick="checkAnswer()" ${!gameState.selectedAnswer ? 'disabled' : ''} class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed px-8 py-3 rounded-xl font-bold transform hover:scale-105 transition-all">
+                                            Kontroleer Antwoord
+                                        </button>
+                                    ` : `
+                                        <div class="text-center">
+                                            <div class="flex items-center justify-center gap-2 mb-4 text-xl font-bold ${gameState.isCorrect ? 'text-green-400' : 'text-red-400'}">
+                                                <span>${gameState.isCorrect ? '✓' : '✗'}</span>
+                                                ${gameState.isCorrect ? 'Reg!' : 'Verkeerd!'}
+                                            </div>
+                                            ${!gameState.isCorrect ? `
+                                                <p class="text-gray-300 mb-4">
+                                                    Die regte antwoord is: <span class="text-green-400 font-bold">
+                                                        ${questionData.type === 'multiple-choice' 
+                                                            ? questionData.options[questionData.correct]
+                                                            : questionData.correct}
+                                                    </span>
+                                                </p>
+                                            ` : ''}
+                                            <button onclick="nextQuestion()" class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transform hover:scale-105 transition-all">
+                                                ${gameState.currentQuestion < lessonData.questions.length - 1 ? 'Volgende Vraag' : 'Voltooi'} →
+                                            </button>
+                                        </div>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderResults() {
+            const lessonData = getCurrentLessonData();
+            const percentage = Math.round((gameState.score / (lessonData.questions.length * 10)) * 100);
+            
+            return `
+                <div class="min-h-screen bg-gradient-to-b from-purple-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+                    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+                        ${createStarField()}
+                    </div>
+                    
+                    <div class="relative z-10 container mx-auto px-4 py-8">
+                        <div class="max-w-2xl mx-auto text-center">
+                            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                                <div class="text-6xl mb-6">
+                                    ${percentage >= 80 ? '🏆' : percentage >= 60 ? '🌟' : '🚀'}
+                                </div>
+                                
+                                <h2 class="text-3xl font-bold mb-4">
+                                    ${percentage >= 80 ? 'Uitstekend!' : percentage >= 60 ? 'Goed gedoen!' : 'Probeer weer!'}
+                                </h2>
+                                
+                                <div class="text-6xl font-bold text-yellow-400 mb-2">${gameState.score}</div>
+                                <div class="text-xl mb-6">Jou telling: ${percentage}%</div>
+                                
+                                <div class="flex justify-center gap-4 mb-8">
+                                    <div class="bg-blue-500/20 rounded-xl p-4">
+                                        <div class="text-2xl font-bold">${gameState.totalStars}</div>
+                                        <div class="text-sm">Totale Sterre</div>
+                                    </div>
+                                    <div class="bg-orange-500/20 rounded-xl p-4">
+                                        <div class="text-2xl font-bold">${gameState.completedLessons.size}</div>
+                                        <div class="text-sm">Lesse Voltooi</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-center gap-4">
+                                    <button onclick="backToPlanets()" class="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+                                        🪐 Terug na Planete
+                                    </button>
+                                    
+                                    <button onclick="restartLesson()" class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+                                        🔄 Probeer Weer
+                                    </button>
+                                    
+                                    ${gameState.currentLesson < lessons.length - 1 ? `
+                                        <button onclick="nextLesson()" class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+                                            Volgende Les →
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Main Render Function
+        function render() {
+            const app = document.getElementById('app');
+            
+            switch (gameState.gamePhase) {
+                case 'planet-select':
+                    app.innerHTML = renderPlanetSelect();
+                    break;
+                case 'lesson':
+                    app.innerHTML = renderLesson();
+                    break;
+                case 'quiz':
+                    app.innerHTML = renderQuiz();
+                    break;
+                case 'results':
+                    app.innerHTML = renderResults();
+                    break;
+                default:
+                    app.innerHTML = renderPlanetSelect();
+            }
+        }
+
+        // Initialize App
+        render();
+    </script>
+</body>
+</html>
